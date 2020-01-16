@@ -1,15 +1,5 @@
 #include "Texture.h"
 
-Texture::Texture()
-{
-
-}
-
-Texture::Texture(const char * path, GLenum mode)
-{
-	load(path, mode);
-}
-
 void Texture::load(const char * path, GLenum mode)
 {
 	glGenTextures(1, &id);
@@ -34,8 +24,9 @@ void Texture::load(const char * path, GLenum mode)
 	stbi_image_free(data);
 }
 
-Texture::~Texture()
+void Texture::unload()
 {
+	assert(id > 0);
 	glDeleteTextures(1, &id);
 }
 

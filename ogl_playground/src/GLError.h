@@ -5,10 +5,10 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-namespace TF
+namespace tf
 {
 	void GLAPIENTRY
-		MessageCallback(GLenum source,
+		OnGlError(GLenum source,
 			GLenum type,
 			GLuint id,
 			GLenum severity,

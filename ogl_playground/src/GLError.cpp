@@ -1,6 +1,6 @@
 #include "GLError.h"
 
-namespace TF
+namespace tf
 {
 	struct MessageCallbackParam
 	{
@@ -10,7 +10,7 @@ namespace TF
 	};
 
 	void GLAPIENTRY
-		MessageCallback(GLenum source,
+		OnGlError(GLenum source,
 			GLenum type,
 			GLuint id,
 			GLenum severity,

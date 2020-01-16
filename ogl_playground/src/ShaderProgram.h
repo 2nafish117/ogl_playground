@@ -13,10 +13,8 @@ namespace tf
 	{
 		unsigned int id;
 
-		ShaderProgram() {  }
-		ShaderProgram(const char* vsPath, const char* fsPath);
-		~ShaderProgram();
 		void load(const char* vsPath, const char* fsPath);
+		void unload();
 		void bind() const { glUseProgram(id); }
 		void unbind() const { glUseProgram(0); }
 

@@ -4,10 +4,11 @@ in vec2 texCoord;
 
 out vec4 oColor;
 
-uniform sampler2D uTexture;
-uniform vec4 uTint = vec4(1, 1, 1, 1);
+// uniform sampler2D uTexture;
+// uniform vec4 uTint = vec4(1, 1, 1, 1);
 
 void main()
 {
-	oColor = texture(uTexture, texCoord) * uTint;
+	// oColor = texture(uTexture, texCoord) * uTint;
+	oColor = vec4(1, 0, 0, 1);
 }

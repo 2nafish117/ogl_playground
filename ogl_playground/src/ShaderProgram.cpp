@@ -2,11 +2,6 @@
 
 namespace tf
 {
-	ShaderProgram::ShaderProgram(const char* vsPath, const char* fsPath)
-	{
-		load(vsPath, fsPath);
-	}
-
 	void ShaderProgram::load(const char* vsPath, const char* fsPath)
 	{
 		FILE* vertexFile = nullptr;
@@ -40,7 +35,7 @@ namespace tf
 		fclose(fragmentFile);
 	}
 
-	ShaderProgram::~ShaderProgram()
+	void ShaderProgram::unload()
 	{
 		glDeleteProgram(id);
 	}

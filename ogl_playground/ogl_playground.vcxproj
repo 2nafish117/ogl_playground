@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="src\BlowTypes.h" />
     <ClInclude Include="src\GLError.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\ShaderProgram.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="Vendor\GLAD\glad\glad.h" />
@@ -391,6 +392,7 @@
     <ClInclude Include="Vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\geometry\cube_indexed_textured_normals.inc" />
     <None Include="Vendor\glm\detail\func_common.inl" />
     <None Include="Vendor\glm\detail\func_common_simd.inl" />
     <None Include="Vendor\glm\detail\func_exponential.inl" />
