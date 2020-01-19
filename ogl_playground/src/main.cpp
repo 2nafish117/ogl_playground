@@ -6,7 +6,13 @@
 
 #include "Mesh.h"
 #include "ShaderProgram.h"
+#include "Texture.h"
 #include "Time.h"
+#include "Camera.h"
+
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 void OnFrameResize(GLFWwindow* window, int width, int height);
 
@@ -22,8 +28,8 @@ int main(void)
 {
 	// Global Data
 	GLFWwindow* window;
-	int windowWidth = 800;
-	int windowHeight = 600;
+	int windowWidth = 1280;
+	int windowHeight = 720;
 	const char* windowText = "Hello Weebs";
 
 	// Startup
@@ -68,9 +74,9 @@ int main(void)
 		// Local Data
 		float verts[] = {
 			// position			// texCoord		// normal
-			0.5f, 0.0f, 0.0f,	0.5f, 0.0f,		0.5f, 0.0f, 0.0f,
-			0.0f, 0.5f, 0.0f,	0.5f, 0.0f,		0.5f, 0.0f, 0.0f,
-			-0.5f, 0.0f, 0.0f,	0.5f, 0.0f,		0.5f, 0.0f, 0.0f,
+			0.5f, 0.0f, 0.0f,	1.0f, 0.0f,		0.5f, 0.0f, 0.0f,
+			0.0f, 0.7f, 0.0f,	0.5f, 1.0f,		0.5f, 0.0f, 0.0f,
+			-0.5f, 0.0f, 0.0f,	0.0f, 0.0f,		0.5f, 0.0f, 0.0f,
 		};
 
 		u32 inds[] = {
@@ -105,17 +111,30 @@ int main(void)
 			(u32*) inds
 		};
 
+		EulerFpsCamera camera;
+		
+		camera.init();
+		
+		camera.aspect = (f32) windowWidth / windowHeight;
+		camera.speed = 10.0f;
+
+
 		AOSMesh mesh;
 		mesh.loadRawData((Vertex*) verts, 3, inds, 3);
+		Texture tex;
+		tex.load("res/textures/wood_crate_texture.png");
+
 		SOAMesh mesh2;
 		mesh2.loadRawData(&soa_vert);
 
 		ShaderProgram shader;
 		shader.load("res/shaders/flat_texture_shader.vert", "res/shaders/flat_texture_shader.frag");
-		shader.bind();
 
 		// Initialization
 		glfwSetFramebufferSizeCallback(window, OnFrameResize);
+		glfwSetCursorPos(window, 0.0, 0.0);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 		while (!glfwWindowShouldClose(window))
@@ -123,8 +142,51 @@ int main(void)
 			glClear(GL_COLOR_BUFFER_BIT);
 			Time::update();
 
-			//mesh.draw();
-			mesh2.draw();
+			{
+				// Input
+				static f64 xpos_now, ypos_now;
+				static f64 xpos_prev = xpos_now, ypos_prev = ypos_now;
+				glfwGetCursorPos(window, &xpos_now, &ypos_now);
+				camera.handleMouseMove(xpos_prev, ypos_prev, xpos_now, ypos_now);
+
+				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+					glfwSetWindowShouldClose(window, GLFW_TRUE);
+
+				if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+				{
+
+				}
+			}
+
+			// glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(80.0f), glm::vec3(0, 1, 0));
+			// glm::mat4 view = glm::lookAt(glm::vec3(0, 0, -5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+			// glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float) windowWidth / windowHeight, 0.1f, 100.0f);
+
+			glm::vec3 rotAxis = glm::vec3(1, 1, 1);
+			rotAxis = glm::normalize(rotAxis);
+			glm::vec3 scale(1, 1, 1);
+			glm::quat orientation = glm::angleAxis((float) 0.0f, rotAxis);
+			glm::vec3 position(0, 0, 0);
+
+			glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), scale);
+			glm::mat4 orientationMat = glm::toMat4(orientation);
+			glm::mat4 translationMat = glm::translate(glm::mat4(1.0f), position);
+
+			glm::mat4 model = translationMat * orientationMat * scaleMat;
+			glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+			glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float) windowWidth / windowHeight, 0.1f, 100.0f);
+
+			//glm::mat4 viewProj = proj * view;
+			glm::mat4 viewProj = camera.getViewProj();
+
+			shader.bind();
+			shader.set1i("uTexture", 0);
+			shader.setMat4fv("uTransform", glm::value_ptr(model));
+			shader.setMat4fv("uViewProjection", glm::value_ptr(viewProj));
+
+			tex.bind(0);
+			mesh.draw();
+			//mesh2.draw();
 
 			glfwSwapBuffers(window);
 
@@ -133,6 +195,7 @@ int main(void)
 
 		mesh.unload();
 		mesh2.unload();
+		tex.unload();
 		shader.unload();
 
 		glfwTerminate();

@@ -36,6 +36,7 @@ namespace tf
 		//	std::cerr << "[" << severity << " GL ERROR " << std::dec << type << std::hex << " ] " << "\n";
 		//	std::cerr << "\t" << message << "\n";
 		//}
-		// __debugbreak();
+		if(type == GL_DEBUG_TYPE_ERROR)
+			__debugbreak();
 	}
 }

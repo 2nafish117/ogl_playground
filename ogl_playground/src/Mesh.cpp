@@ -21,10 +21,10 @@ namespace tf
 		_addAttr(vertices->indices, numVerts * sizeof(vertices->indices[0]), 1, GL_UNSIGNED_INT, IndexAttr, GL_ELEMENT_ARRAY_BUFFER);
 	}
 
-	inline void SOAMesh::_addAttr(void* buff, u32 size,
+	void SOAMesh::_addAttr(void* buff, u32 size,
 		u32 components_per_attr,
 		GLenum type, AttributeType attr,
-		GLenum buffer_target_type = GL_ARRAY_BUFFER)
+		GLenum buffer_target_type)
 	{
 		glBindBuffer(buffer_target_type, attributes[attr]);
 		glBufferData(buffer_target_type, size, buff, GL_STATIC_DRAW);

@@ -1,14 +1,16 @@
-#version 330 core
+#version 430 core
 
+// Input
 in vec2 texCoord;
 
+// Output
 out vec4 oColor;
 
-// uniform sampler2D uTexture;
-// uniform vec4 uTint = vec4(1, 1, 1, 1);
+// Uniforms
+layout(location = 5) uniform sampler2D uTexture;
+layout(location = 6) uniform vec4 uTint = vec4(1, 1, 1, 1);
 
 void main()
 {
-	// oColor = texture(uTexture, texCoord) * uTint;
-	oColor = vec4(1, 0, 0, 1);
+	oColor = texture(uTexture, texCoord) * uTint;
 }
