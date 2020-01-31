@@ -35,10 +35,10 @@ namespace tf
 			return proj * view;
 		}
 
-		void handleMouseMove(f64 xpos_prev, f64 ypos_prev, f64 xpos_now, f64 ypos_now)
+		void handleMouseMove(double xpos_prev, double ypos_prev, double xpos_now, double ypos_now)
 		{
-			f64 dx = xpos_now - xpos_prev;
-			f64 dy = ypos_now - ypos_prev;
+			double dx = xpos_now - xpos_prev;
+			double dy = ypos_now - ypos_prev;
 
 			// dx > 0 => rotate about -ve y axis (yaw)
 			// dy > 0 => rotate about -ve x axis (pitch)
@@ -69,43 +69,36 @@ namespace tf
 		void init()
 		{
 			position = glm::vec3(0, 0, 5);
-			yaw = -glm::half_pi<float>();
+			yaw = -glm::half_pi<float>() * 0;
 			pitch = roll = 0;
-			front = glm::vec3(0, 0, -1);
-			up = glm::vec3(0, 1, 0);
-			right = glm::cross(front, up);
+			front = glm::vec3(0, 0, 1);
 			worldUp = glm::vec3(0, 1, 0);
+
+			right = glm::normalize(glm::cross(front, worldUp));
+			up = glm::normalize(glm::cross(right, front));
 
 			near = 0.1f;
 			far = 100.0f;
 			fov = glm::radians(60.0f);
-			sensitivity = 1.0f;
+			sensitivity = 0.01f;
 		}
 
 		glm::mat4 getViewProj()
 		{
-			// glm::mat4 rot = glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0));
-			// rot = glm::rotate(rot, pitch, glm::vec3(1, 0, 0));
-			// 
-
-			glm::mat4 rot = glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0));
-			front = rot * glm::vec4(front, 1.0f);
 			glm::mat4 view = glm::lookAt(position, position + front, up);
-
 
 			glm::mat4 projection = glm::perspective(fov, aspect, near, far);
 			return projection * view;
 		}
 
-		void handleMouseMove(f64 xpos_prev, f64 ypos_prev, f64 xpos_now, f64 ypos_now)
+		void handleMouseMove(double xpos_prev, double ypos_prev, double xpos_now, double ypos_now)
 		{
-			f64 dx = xpos_now - xpos_prev;
-			f64 dy = ypos_now - ypos_prev;
+			double dx = xpos_now - xpos_prev;
+			double dy = ypos_now - ypos_prev;
+			std::cout << dx << ", " << dy << "\n";
 
 			yaw += sensitivity * dx;
 			pitch += sensitivity * dy;
-
-
 
 			front.x = cos(yaw) * cos(pitch);
 			front.y = sin(pitch);

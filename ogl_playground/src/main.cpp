@@ -32,6 +32,9 @@ int main(void)
 	int windowHeight = 720;
 	const char* windowText = "Hello Weebs";
 
+	static f64 xpos_now, ypos_now;
+	static f64 xpos_prev, ypos_prev;
+
 	// Startup
 	{
 		if (!glfwInit())
@@ -133,7 +136,7 @@ int main(void)
 		// Initialization
 		glfwSetFramebufferSizeCallback(window, OnFrameResize);
 		glfwSetCursorPos(window, 0.0, 0.0);
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		// glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -144,9 +147,10 @@ int main(void)
 
 			{
 				// Input
-				static f64 xpos_now, ypos_now;
-				static f64 xpos_prev = xpos_now, ypos_prev = ypos_now;
+				xpos_prev = xpos_now;
+				ypos_prev = ypos_now;
 				glfwGetCursorPos(window, &xpos_now, &ypos_now);
+				//std::cout << xpos_prev << ", " << ypos_prev << " -> " << xpos_now << ", " << ypos_now << "\n";
 				camera.handleMouseMove(xpos_prev, ypos_prev, xpos_now, ypos_now);
 
 				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
